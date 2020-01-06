@@ -10,7 +10,7 @@ def emailAlert(dfile):
 
 def expirationCheck(dfile):
     # Format date
-    dfile = pd.to_datetime(df.Cert End Date)
+    dfile = pd.to_datetime(dfile.Cert_End_Date)
     dfile['Cert_End_Date'] = dfile['Cert_End_Date'].dfile.strftime('%Y,%m,%d')
 
     # Compare authorization to expiration date
