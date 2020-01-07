@@ -9,17 +9,19 @@ def emailAlert(dfile):
     pass
 
 def expirationCheck(dfile):
+    dfile.drop(['ID'],axis=0)
+    dfile.columns = ["LastName","FirstName","HomePhone","Address","City","State","PostalCode","StartOfCare","CertEndDate","Ins","DOB","MedRecordNo","Hours","ServiceCodes","Diagnosis","AuthNumber","Billed","Profit","","","","","","",""]
     # Format date
-    dfile = pd.to_datetime(dfile.Cert_End_Date)
-    dfile['Cert_End_Date'] = dfile['Cert_End_Date'].dfile.strftime('%Y,%m,%d')
+    dfile = pd.to_datetime(dfile['CertEndDate'])
+    # dfile['CertEndDate'] = dfile['CertEndDate'].strftime('%Y,%m,%d')
 
     # Compare authorization to expiration date
-    today = datetime.now()
-    dfile[((dfile['Cert_End_Date'] - today).days <= 14)]
+    # today = datetime.now()
+    # dfile[((dfile['CertEndDate'] - today).days <= 14)]
 
     # Call email fnc on expiring auth
     emailAlert(dfile)
-    print(df)
+    print(dfile.index[0])
 
 class Update:
     def __init__(self, fname, lname, code, auth):
