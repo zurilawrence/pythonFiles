@@ -1,10 +1,12 @@
-import pandas
+import pandas as pd
 import sys
+import formatSonetoPayments as FSP
 from flask import Flask
 from flask_mail import Mail
 from flask_mail import Message
 
-def emailResults();
+def emailResults():
+    # TODO: Edit recipients list
     mail = Mail()
     app = Flask(__name__)
     mail.init_app(app)
@@ -37,7 +39,9 @@ def authorizePayments(pay,rep): # using UPDATE
     # Check number
     rep.loc[rep['Client']==pay['Client'] & rep['StartDate']==pay['ServiceDate'] & rep['Service']==pay['Service'], 'Check #'] = pay['PaymentNo']
 
+# TODO: Call formatSonetoPayments for proper file
 payments = pd.read_tocsv(sys.argv[1])
 reports = pd.read_tocsv(sys.argv[2])
+# TODO: For loop to account for row
 authorizePayments(payments,reports)
 
