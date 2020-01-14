@@ -17,13 +17,16 @@ def expirationCheck(dfile):
     
     # Compare authorization to expiration date
     today = datetime.now()
-    print("Today: ",today)
+    newIndex = list(range(119))
+    dfile.rename(index=newIndex,inplace=True)
+
     for row in range(119):
         dateList = dfile.at[dfile.index[row],'Cert End Date']
-        for date in dateList:
-            print(date)
-            if (date-today).days >= 14:
-               print("Removed")
+        print("Line: ",dateList)
+        # for date in dateList:
+            # print(date)
+            # if (date-today).days >= 14:
+              #  print("Removed")
 
     print("After sql statement")
     # Call email fnc on expiring auth
