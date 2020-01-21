@@ -1,0 +1,9 @@
+Hello!
+
+The following is a list of payments from the month of ${MONTH} that have not been completed.
+This verification was last run on ${DATE}.
+
+Regards,
+QA
+
+DO NOT REPLY TO THIS EMAIL - AS THERE IS NO SERVER ASSOCIATED.

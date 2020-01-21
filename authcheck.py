@@ -1,3 +1,6 @@
+#  Created by Zuri Lawrence on 12/31/19.
+#  Copyright © 2019 Zuri Lawrence. All rights reserved.
+
 import sys
 import pandas as pd
 from flask import Flask
@@ -11,10 +14,10 @@ def emailAlert(dfile):
 def expirationCheck(dfile):
     # Format date
     dfile['Cert End Date'] = pd.to_datetime(dfile['Cert End Date'].astype(str), errors='coerce')
-    
+
     # Fill in NaN values
     dfile.fillna(datetime.now())
-    
+
     # Compare authorization to expiration date
     today = datetime.now()
     newIndex = list(range(119))
@@ -42,5 +45,5 @@ class Update:
     def operation():
         df = pd.read_excel(sys.argv[1],index_col=0)
         expirationCheck(df)
-        
+
     operation()
