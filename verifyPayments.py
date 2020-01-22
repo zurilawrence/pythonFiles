@@ -9,7 +9,6 @@ from flask_mail import Mail
 from flask_mail import Message
 
 def emailResults():
-    # TODO: Edit recipients list
     mail = Mail()
     app = Flask(__name__)
     mail.init_app(app)
@@ -32,19 +31,28 @@ def emailResults():
     # Send mail
     mail.msg(msg)
 
-def authorizePayments(pay,rep): # using UPDATE
-    # Date Billed
-    rep.loc[rep['Client']==pay['Client'] & rep['Start Date']==pay['ServiceDate'] & rep['Service']==pay['Service'],'DateBilled'] = pay['PostingDate']
+def selectMissedPayments(rep):
+    # Missing payments in report record are sent to be emailed
+    pass
 
-    # Amount Paid
-    rep.loc[rep['Client']==pay['Client'] & rep['Start Date']==pay['ServiceDate'] & rep['Service']==pay['Service'], '$ Paid'] = pay['AmountPaid']
+def authorizePayments(pay,rep):
+    # For every row in report SELECT column from payment record
+    for idx in range(len(pay.index)):
 
-    # Check number
-    rep.loc[rep['Client']==pay['Client'] & rep['Start Date']==pay['ServiceDate'] & rep['Service']==pay['Service'], 'Check #'] = pay['PaymentNo']
+        client = rep.loc[idx, 'Client']
+        startDate = rep.loc[idx, 'Start Date']
+        serviceCode = rep.loc[idx, 'Service']
+
+        # Date Billed
+        rep.loc[idx, 'DateBilled'] = rep.loc[pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode)].index, 'PostingDate']
+        # Amount Paid
+        rep.loc[idx, '$ Paid'] = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode), ['AmountPaid']]
+        # Check Number
+        rep.loc[idx, 'DateBilled'] = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode), ['PaymentNo']]
 
 
 
 formattedFile = FSP.formatPayments(pd.read_csv(sys.argv[1]))
 reportToSend = pd.read_csv(sys.argv[2])
-# TODO: For loop to account for row
+
 authorizePayments(formattedFile,reportToSend)
