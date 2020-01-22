@@ -23,4 +23,4 @@ def formatPayments(dfile):
     return dfile
 
 dfile = pd.read_csv(sys.argv[1])
-formatPayments(dfile)
+print(formatPayments(dfile))

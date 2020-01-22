@@ -14,9 +14,9 @@ def emailResults():
     app = Flask(__name__)
     mail.init_app(app)
 
-    @app.route("/")
     f = open("resultMessage.txt", "r")
     message = f.read()
+    f.write(datetime.today().date + ".")
     f.close()
 
     with open("recipients.txt") as f:
@@ -34,16 +34,17 @@ def emailResults():
 
 def authorizePayments(pay,rep): # using UPDATE
     # Date Billed
-    rep.loc[rep['Client']==pay.['Client'] & rep['StartDate']==pay['ServiceDate'] & rep['Service']==pay['Service'],'DateBilled'] = pay['PostingDate']
+    rep.loc[rep['Client']==pay['Client'] & rep['Start Date']==pay['ServiceDate'] & rep['Service']==pay['Service'],'DateBilled'] = pay['PostingDate']
 
     # Amount Paid
-    rep.loc[rep['Client']==pay['Client'] & rep['StartDate']==pay['ServiceDate'] & rep['Service']==pay['Service'], '$ Paid'] = pay['AmountPaid']
+    rep.loc[rep['Client']==pay['Client'] & rep['Start Date']==pay['ServiceDate'] & rep['Service']==pay['Service'], '$ Paid'] = pay['AmountPaid']
 
     # Check number
-    rep.loc[rep['Client']==pay['Client'] & rep['StartDate']==pay['ServiceDate'] & rep['Service']==pay['Service'], 'Check #'] = pay['PaymentNo']
+    rep.loc[rep['Client']==pay['Client'] & rep['Start Date']==pay['ServiceDate'] & rep['Service']==pay['Service'], 'Check #'] = pay['PaymentNo']
 
-# TODO: Call formatSonetoPayments for proper file
-payments = pd.read_tocsv(sys.argv[1])
-oldReports = pd.read_tocsv(sys.argv[2])
+
+
+formattedFile = FSP.formatPayments(pd.read_csv(sys.argv[1]))
+reportToSend = pd.read_csv(sys.argv[2])
 # TODO: For loop to account for row
-authorizePayments(payments,reports)
+authorizePayments(formattedFile,reportToSend)
