@@ -36,21 +36,37 @@ def selectMissedPayments(rep):
     pass
 
 def authorizePayments(pay,rep):
-    # For every row in report SELECT column from payment record
-    for idx in range(len(pay.index)):
+    # Format reports columns to datetime object
+    rep.rename(columns={"Start Date":"StartDate"},inplace=True)
+    rep['Start Date'] = pd.to_datetime(rep.StartDate)
+    rep['Start Date'] = rep['Start Date'].dt.strftime('%m/%d/%Y')
 
+    length = len(pay.index)-1
+    # For every row in report SELECT column from payment record
+    for idx in range(length):
         client = rep.loc[idx, 'Client']
         startDate = rep.loc[idx, 'Start Date']
         serviceCode = rep.loc[idx, 'Service']
 
-        # Date Billed
-        rep.loc[idx, 'DateBilled'] = rep.loc[pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode)].index, 'PostingDate']
-        # Amount Paid
-        rep.loc[idx, '$ Paid'] = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode), ['AmountPaid']]
-        # Check Number
-        rep.loc[idx, 'DateBilled'] = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode), ['PaymentNo']]
+        # Set sql query selection
+        query = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode)]
 
+        # UPDATE if a row is selected
+        if next(iter(query.index), 'no match') != 'no match':
+            dfb = next(iter(query.index), 'no match') # set index
+            print()
+            #print(f'This is the index: {dfb}')
+            #print(pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode)])
 
+            rep.loc[idx, 'DateBilled'] = pay.loc[dfb, 'PostingDate'] # date billed
+            """
+            # Amount Paid
+            rep.loc[idx, '$ Paid'] = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode), ['AmountPaid']]
+            # Check Number
+            rep.loc[idx, 'DateBilled'] = pay[(pay['Client']==client) & (pay['ServiceDate']==startDate) & (pay['ServiceCodeName']==serviceCode), ['PaymentNo']]
+            """
+        else:
+            pass
 
 formattedFile = FSP.formatPayments(pd.read_csv(sys.argv[1]))
 reportToSend = pd.read_csv(sys.argv[2])
