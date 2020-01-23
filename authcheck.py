@@ -3,6 +3,7 @@
 
 import sys
 import pandas as pd
+from datetime import date
 from flask import Flask
 from flask_mail import Mail
 from flask_mail import Message
@@ -12,11 +13,21 @@ def emailAlert(dfile):
     pass
 
 def expirationCheck(dfile):
-    # Format date
-    dfile['Cert End Date'] = pd.to_datetime(dfile['Cert End Date'].astype(str), errors='coerce')
+
+
+    #Add index
+    newIndex = list(range(len(dfile.index)))
+    dfile['Index'] = newIndex
+    dfile.set_index('Index',inplace=True)
 
     # Fill in NaN values
-    dfile.fillna(datetime.now())
+    dfile.fillna(date.today())
+
+    # Format date
+    dfile.rename(columns={"Cert End Date":"CertEndDate"},inplace=True)
+    print(dfile['CertEndDate'])
+    dfile['CertEndDate'] = pd.to_datetime(dfile.CertEndDate)
+    # dfile['Start Date'] = rep['Start Date'].dt.strftime('%m/%d/%Y')
 
     # Compare authorization to expiration date
     today = datetime.now()
@@ -43,7 +54,7 @@ class Update:
         self.auth = auth
 
     def operation():
-        df = pd.read_excel(sys.argv[1],index_col=0)
+        df = pd.read_csv(sys.argv[1],index_col=0)
         expirationCheck(df)
 
     operation()
