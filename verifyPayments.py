@@ -18,11 +18,9 @@ def emailResults():
     with open("resultMessage.txt") as f:
         message = f.read()
 
-    f = open("resultMessage.txt","w")
-    f.write(date.today().strftime('%m/%d/%Y') + ".")
-    f.close()
-
-
+    with open("resultMessage.txt","a") as f:
+        f.write(date.today().strftime('%m/%d/%Y') + ".")
+            
     with open("recipients.txt") as f:
         msg = Message(recipients=f.readline(),
                 sender=f.readline(),
