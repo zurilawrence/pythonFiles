@@ -11,39 +11,12 @@ from flask_mail import Mail
 from flask_mail import Message
 
 def emailResults():
-    mail = Mail()
-    app = Flask(__name__)
-    mail.init_app(app)
-
-    with open("resultMessage.txt") as f:
-        message = f.read()
-
-    f = open("resultMessage.txt","w")
-    f.write(date.today().strftime('%m/%d/%Y') + ".")
-    f.close()
-
-
-    with open("recipients.txt") as f:
-        msg = Message(recipients=f.readline(),
-                sender=f.readline(),
-                body=message,
-                subject="Billing reconciliation")
-
-    # Attach csv of errors
-    with app.open_resource("billingAlerts.csv") as fp:
-        msg.attach("billingAlerts.csv","billingAlerts/csv",fp.read())
-
-    # Send mail
-    with mail.connect() as conn:
-        conn.send(msg)
-
+    pass
 
 def selectMissedPayments(rep):
     # Missing payments in report record are sent to be emailed
     finalReport = rep[rep['Difference'] != 0]
     rep.to_csv("billingAlerts.csv")
-
-    emailResults()
 
 def authorizePayments(pay,rep):
     # Format reports columns to datetime object
