@@ -13,21 +13,22 @@ def emailAlert(dfile):
     pass
 
 def expirationCheck(dfile):
-
-
     #Add index
     newIndex = list(range(len(dfile.index)))
     dfile['Index'] = newIndex
     dfile.set_index('Index',inplace=True)
 
+    dfile.rename(columns={"Cert End Date":"CertEndDate"},inplace=True)
+
     # Fill in NaN values
-    dfile.fillna(date.today())
+    for idx in range(len(dfile.index)-1):
+        if(dfile.loc[idx,'CertEndDate'] == "NaN"):
+            dfile.loc[idx,'CertEndDate'] = date.today().strftime('%m/%d/%Y')
+            print(dfile.loc[idx,'CertEndDate'])
 
     # Format date
-    dfile.rename(columns={"Cert End Date":"CertEndDate"},inplace=True)
-    print(dfile['CertEndDate'])
     dfile['CertEndDate'] = pd.to_datetime(dfile.CertEndDate)
-    # dfile['Start Date'] = rep['Start Date'].dt.strftime('%m/%d/%Y')
+    dfile['CertEndDate'] = dfile['CertEndDate'].dt.strftime('%m/%d/%Y')
 
     # Compare authorization to expiration date
     today = datetime.now()
@@ -35,7 +36,7 @@ def expirationCheck(dfile):
     dfile.rename(index=newIndex,inplace=True)
 
     for row in range(119):
-        dateList = dfile.at[dfile.index[row],'Cert End Date']
+        dateList = dfile.at[dfile.index[row,'CertEndDate']]
         print("Line: ",dateList)
         # for date in dateList:
             # print(date)
