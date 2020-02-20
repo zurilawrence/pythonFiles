@@ -1,6 +1,7 @@
 #  Created by Zuri Lawrence on 12/31/19.
 #  Copyright © 2019 Zuri Lawrence. All rights reserved.
 
+import pdb
 import sys
 import pandas as pd
 from datetime import date
@@ -22,11 +23,11 @@ def expirationCheck(dfile):
 
     # Fill in NaN values
     for idx in range(len(dfile.index)-1):
-        if(dfile.loc[idx,'CertEndDate'] == "NaN"):
+        if(dfile.loc[idx,'CertEndDate'] == ""):
             dfile.loc[idx,'CertEndDate'] = date.today().strftime('%m/%d/%Y')
-            print(dfile.loc[idx,'CertEndDate'])
 
     # Format date
+    pdb.set_trace()
     dfile['CertEndDate'] = pd.to_datetime(dfile.CertEndDate)
     dfile['CertEndDate'] = dfile['CertEndDate'].dt.strftime('%m/%d/%Y')
 
