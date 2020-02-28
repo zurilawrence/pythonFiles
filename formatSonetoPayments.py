@@ -16,6 +16,12 @@ def formatPayments(dfile):
     dfile['PostingDate'] = dfile['PostingDate'].dt.strftime('%m/%d/%Y')
     dfile['ServiceDate'] = dfile['ServiceDate'].dt.strftime('%m/%d/%Y')
 
+    # Payment values to decimal from string
+    for idx in range(len(dfile.index)):
+        dfile.loc[idx,'AmountPaid'].replace('(','')
+        dfile.loc[idx,'AmountPaid'].replace(')','')
+        dfile.loc[idx,'AmountPaid'].replace('$','')
+
     # Change payment values to positive
     for idx in range(len(dfile.index)):
         dfile.loc[idx, 'AmountPaid'] = float(dfile.loc[idx, 'AmountPaid'])
